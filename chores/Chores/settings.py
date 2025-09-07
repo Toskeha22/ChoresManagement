@@ -57,7 +57,7 @@ ROOT_URLCONF = 'Chores.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -118,7 +118,20 @@ AUTH_USER_MODEL = 'accounts.User'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
+# URL для доступу до статичних файлів
+STATIC_URL = '/static/'
+
+# Папка для збору статичних файлів у продакшені
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Папки, де Django шукає статичні файли під час розробки
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
+
+# Media files (користувацькі завантаження)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media' 
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
