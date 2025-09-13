@@ -1,9 +1,9 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
-from .models import Task
+from .models import Task, TaskCategory
 from django.shortcuts import redirect
 from django.utils import timezone
-from .forms import TaskForm
+from .forms import TaskForm, TaskCategoryForm
 from .mixins import TaskOwnerMixin 
 
 class TaskListView(ListView):
@@ -52,6 +52,43 @@ def task_complete(request, pk):
     task.save()
     return redirect('tasks:task_list')
 
+
+class TaskCategoryListView(ListView):
+    model = TaskCategory
+    template_name = "tasks/task_category_list.html"
+    context_object_name = "task_categories"
+
+    def get_queryset(self):
+        return TaskCategory.objects.filter(user = self.request.user)
+    
+
+class TaskCategoryDetailView(TaskOwnerMixin, DetailView):
+    model = TaskCategory
+    template_name = "tasks/task_category_detail.html"
+
+
+class TaskCategoryCreateView(CreateView):
+    model = TaskCategory
+    form_class = TaskCategoryForm
+    template_name = "tasks/task_category_form.html"
+    success_url = reverse_lazy("tasks:task_category_list")
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+
+class TaskCategoryUpdateView(TaskOwnerMixin, UpdateView):
+    model = TaskCategory
+    form_class = TaskCategoryForm
+    template_name = "tasks/task_category_form.html"
+    success_url = reverse_lazy("tasks:task_category_list")
+
+
+class TaskCategoryDeleteView(TaskOwnerMixin, DeleteView):
+    model = TaskCategory
+    template_name = "tasks/task_category_confirm_delete.html"
+    success_url = reverse_lazy("tasks:task_category_list")
 
 
 
