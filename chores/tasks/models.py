@@ -1,44 +1,42 @@
 from django.db import models
-from django.core.validators import MinValueValidator, MaxValueValidator
 
 class Task(models.Model):
-
     PERIOD_CHOICES = [
-            ('once', 'Одноразове'),
-            ('daily', 'Щоденне'),
-            ('weekly', 'Щотижневе'),
-            ('monthly', 'Щомісячне'),
-        ]
-    PRIORITY_CHOICES = [
-        ('low', 'Низький'),
-        ('medium', 'Середній'),
-        ('high', 'Високий'),
+        ("once", "Одноразове"),
+        ("daily", "Щоденне"),
+        ("weekly", "Щотижневе"),
+        ("monthly", "Щомісячне"),
     ]
 
-    name = models.CharField(max_length=200, null=True)
-    description = models.TextField(blank=True)
-    category = models.CharField(max_length=100)
-    difficulty = models.IntegerField(default=1, validators=[MinValueValidator(1), MaxValueValidator(5)])
-    expected_time = models.DurationField()
-    periodicity = models.CharField(max_length=10, choices=PERIOD_CHOICES, default='once')
-    priority = models.CharField(max_length=10, choices=PRIORITY_CHOICES, default='medium')
-    is_archivedd = models.BooleanField(default=False)
+    PRIORITY_CHOICES = [
+        (1, "Низький"),
+        (2, "Середній"),
+        (3, "Високий"),
+    ]
+
+    STATUS_CHOICES = [
+        ("planned", "Заплановано"),
+        ("in_progress", "В роботі"),
+        ("completed", "Виконано"),
+        ("canceled", "Відмінено"),
+    ]
+
+    name = models.CharField(max_length=200, verbose_name="Назва")
+    description = models.TextField(blank=True, verbose_name="Опис")
+    status = models.CharField(max_length=20,choices=STATUS_CHOICES,default="planned",verbose_name="Статус")
+    category = models.CharField(max_length=100, verbose_name="Категорія")
+    difficulty = models.PositiveSmallIntegerField(default=1, verbose_name="Складність (1-5)")
+    expected_time = models.DurationField(verbose_name="Очікуваний час виконання")
+    periodicity = models.CharField(max_length=20, choices=PERIOD_CHOICES, default="once", verbose_name="Періодичність")
+    priority = models.IntegerField(choices=PRIORITY_CHOICES, default=2, verbose_name="Пріоритет")
+    is_archived = models.BooleanField(default=False, verbose_name="Архівоване")
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    class Meta():
+    class Meta:
         verbose_name = "Завдання"
         verbose_name_plural = "Завдання"
 
     def __str__(self):
         return self.name
-
-
-   
-  #  МЕТА-ІНФОРМАЦІЯ:
-   #     verbose_name = "Завдання"
-    #    verbose_name_plural = "Завдання"
-
-  #  МЕТОД str:
-   #     ПОВЕРТАЄ значення поля name (для зручного відображення в адмінці)
